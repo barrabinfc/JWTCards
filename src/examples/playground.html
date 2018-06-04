@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>qrcards playground</title>
+
+    <link rel="stylesheet" href="../assets/uikit/css/uikit.min.css" />
+    <script src="../assets/uikit/js/uikit.min.js"></script>
+    <script src="../assets/uikit/js/uikit-icons.min.js"></script>
+
+    <style>
+        #qrcard-payload {
+            font-family: 'Roboto Mono', Menlo, Monaco, Consolas, monospace;
+            font-size: 14px;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        #qrcard {
+            background-color: white;
+            padding: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="uk-container uk-container-center uk-margin-top" id="app">
+
+        <div>
+            <h1>QR Cards Playground</h1>
+        </div>
+
+        <div class="uk-padding uk-background-muted">
+            <div class="uk-flex uk-flex-between">
+                <h2>JWT - JSON Web Token</h2>
+                <div id="qrcard-read" class="js-upload" uk-form-custom>
+                    <input type="file" onchange="parseQRImage(this.files[0])">
+                    <button class="uk-button uk-button-secondary" tabindex="-1">Load QR Card</button>
+                </div>
+            </div>
+            <hr>
+
+            <div class="uk-child-width-1-2@s uk-grid-small" uk-grid>
+                <form class="uk-panel">
+                    <textarea id="qrcard-payload" class="uk-textarea uk-form-large">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiMTIzNDUiLCJtb3JlIjoiMTIzNDUifQ.Ioe4lNE0MOL0UVkq3E7qiVKIomKmvt1BW-XQHo-eucM</textarea>
+                </form>
+                <div class="uk-panel">
+                    <img id="qrcard-image" class="uk-card"></img>
+                </div>
+            </div>
+            <footer class="uk-child-width-1-2@s uk-grid-small" uk-grid>
+                <div class="uk-panel">
+                    <button class="uk-button uk-button-primary uk-width-1-1" onclick="jwt2qr( $('#qrcard-payload').value )">Create QR Card</button>
+                </div>
+                <div class="uk-panel">
+                    <div class="debug">
+                        <canvas id="qrcard-canvas" style="display: none;"></canvas>
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+    </div>
+</body>
+
+<script>
+    const QR_SIZE = 400
+
+    function jwt2qr(token) {
+        AwesomeQR.create({
+            text: token,
+            size: QR_SIZE,
+            margin: 20,
+            bindElement: 'qrcard-image'
+        });
+    }
+
+    function qr2jwt( qrData , img_src=null) {
+        $('#qrcard-payload').value = qrData
+        if(img_src){
+            $('#qrcard-image').src = img_src
+        }
+    }
+
+    function parseQRImage( file ) {
+        /**
+         * Load image locally
+         */
+        var img = document.createElement(`img`)
+        
+        var reader = new FileReader()
+        reader.onload = (e) => {
+            img.src = e.target.result
+            
+            let imageData = u.extractBitmap( img , img.width, img.height)
+            var qrData = QRReader(imageData.data, imageData.width, imageData.height)
+            if(qrData){
+                console.log("QR Card scan OK: ", qrData.data)
+                qr2jwt(qrData.data, img.src)
+            } else {
+                console.error("QR Card scan FAILED", qrData)
+            }
+        }
+        reader.readAsDataURL(file)
+    }
+
+    function init(){
+        jwt2qr($('#qrcard-payload').value);
+
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+</script>
+
+</html>
