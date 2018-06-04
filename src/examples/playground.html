@@ -67,6 +67,7 @@
 
 <script>
     const QR_SIZE = 400
+    var keystore = jose.JWK.createKeyStore()
 
     function jwt2qr(token) {
         AwesomeQR.create({
