@@ -1,14 +1,23 @@
-const HtmlWebPackPlugin = require("html-webpack-plugin");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
+const path = require("path");
+const webpack = require("webpack");
+const HtmlPlugin = require("html-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
+  entry: {
+    index: './src/index.ts',
+  },
+  output: {
+    filename: './dist/jwtcards.js',
+    library: 'JWTCards'
+  },
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.ts$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader"
+          loader: "ts-loader"
         }
       },
       {
@@ -16,16 +25,21 @@ module.exports = {
         use: [
           {
             loader: "html-loader",
-            options: { minimize: true }
+            options: {
+              attrs: false
+            }
           }
         ]
       }
     ]
   },
+  resolve: {
+    extensions: ['.tsx','.ts','.js']
+  },
   plugins: [
-    new CopyWebpackPlugin([ {from: 'src/assets',
+    new CopyPlugin([ {from: 'src/assets',
                             to: 'assets'}]),
-    new HtmlWebPackPlugin({
+    new HtmlPlugin({
       template: "./src/examples/playground.html",
       filename: "./playground.html"
     })
