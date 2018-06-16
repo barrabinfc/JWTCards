@@ -102,9 +102,13 @@
 
     function jwt2qr(token) {
         console.log("Creating QR Code...", token)
-        JWTCards.createQR(token).then( (data) => {
-            console.log("Qr code created")
-        })
+        // ... and make use of it
+	    AwesomeQR.create({
+            text: token,
+            size: QR_SIZE,
+            margin: 20,
+            bindElement: 'qrcard-image'
+	    });
     }
 
     function plainJwt(token){
@@ -152,4 +156,11 @@
     document.addEventListener('DOMContentLoaded', init);
 </script>
 
+<script type="text/javascript" src="../assets/libs/awesome-qr/dist/require.js"></script>
+<script>
+    var __awesome_qr_base_path = "../assets/libs/awesome-qr/dist/";
+    require([__awesome_qr_base_path + '/awesome-qr'], function (AwesomeQR) {
+        window.AwesomeQR = AwesomeQR
+    }) 
+</script>
 </html>

@@ -1,5 +1,3 @@
-declare var require: any
-
 import jsQR from "jsqr"
 
 import * as parseJWT from "jwt-decode"

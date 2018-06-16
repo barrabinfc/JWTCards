@@ -5,7 +5,7 @@
  * You should always verify and create the tokens on the server side.
  */
  import { JWTCard } from './JWTCard'
- import { readQR , createQR, jwtDecode } from './utils'
+ import { readQR ,  jwtDecode } from './utils'
 
 /**
  * Decode data retrieved from a JWTCard
